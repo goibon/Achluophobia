@@ -27,5 +27,4 @@ void Lamp::drain() {
 
 void Lamp::increaseDrainRate(int increment) {
   mDrainRate += increment;
-  printf("lamp.drainRate: %d\n", mDrainRate);
 }
