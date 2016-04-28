@@ -10,6 +10,7 @@ public:
   FontTexture (int width, int height, TTF_Font* font);
 
   bool loadFromFile(std::string text, SDL_Renderer* renderer, SDL_Color textColor);
+  bool loadFromFile(std::string text, SDL_Renderer* renderer, SDL_Color textColor, SDL_Color backgroundColor);
 };
 
 #endif
