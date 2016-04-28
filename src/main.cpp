@@ -1,5 +1,5 @@
 #include "lamp.hpp"
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <stdio.h>
 
 // Constants
