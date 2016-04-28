@@ -25,6 +25,9 @@ int main(int argc, char const *argv[]) {
     // Main loop flag
     bool shouldQuit = false;
 
+    // Menu flag
+    bool isInMenu = false;
+
     // Event handler
     SDL_Event event;
 
@@ -46,60 +49,71 @@ int main(int argc, char const *argv[]) {
     bool isBlinking = false;
 
     while (!shouldQuit) {
-      while (SDL_PollEvent(&event) != 0) {
-        if (event.type == SDL_QUIT) {
-          shouldQuit = true;
-        } else if (event.type == SDL_KEYDOWN) {
-          if (event.key.keysym.sym == SDLK_UP) {
-            lamp.pump();
+
+      if (isInMenu)
+      {
+        while (SDL_PollEvent(&event) != 0) {
+          if (event.type == SDL_QUIT) {
+            shouldQuit = true;
+          }
+        }
+      }
+      else
+      {
+        while (SDL_PollEvent(&event) != 0) {
+          if (event.type == SDL_QUIT) {
+            shouldQuit = true;
+          } else if (event.type == SDL_KEYDOWN) {
+            if (event.key.keysym.sym == SDLK_UP) {
+              lamp.pump();
+            }
+          }
+        }
+
+        currentTicks = SDL_GetTicks();
+
+        if (lamp.isDrained()) {
+          SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
+        } else {
+          ticksSinceLastDrain = currentTicks - ticksAtLastDrain;
+          if (ticksSinceLastDrain > 1000) {
+            // Drain lamp power
+            lamp.drain();
+            ticksAtLastDrain = currentTicks;
+          }
+          ticksSinceLastBlinkSession = currentTicks - ticksAtLastBlinkSession;
+
+          if (isBlinking) {
+            ticksSinceLastBlink = currentTicks - ticksAtLastBlink;
+            if (ticksSinceLastBlink > BLINK_DURATION) {
+              if (SDL_GetRenderDrawColor(gRenderer, &r, &g, &b, &a) == 0) {
+                ticksAtLastBlink = currentTicks;
+                if (r == 0) {
+                  // Turn screen white
+                  SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+                  isBlinking = false;
+                  ticksAtLastBlinkSession = currentTicks;
+                } else {
+                  // Turn screen black
+                  SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
+                }
+              } else {
+                printf("SDL_GetRendererDrawColor Failed! SDL_Error: %s\n",
+                       SDL_GetError());
+              }
+            }
+          } else if ((lamp.getCharge() / 10) * BLINK_RATE <
+                     ticksSinceLastBlinkSession) {
+            isBlinking = true;
+          }
+
+          if (currentTicks % DRAIN_INCREMENT_INTERVAL < 17) {
+            lamp.increaseDrainRate(DRAIN_INCREMENT);
           }
         }
       }
       // Clear screen
       SDL_RenderClear(gRenderer);
-
-      currentTicks = SDL_GetTicks();
-
-      if (lamp.isDrained()) {
-        SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
-      } else {
-        ticksSinceLastDrain = currentTicks - ticksAtLastDrain;
-        if (ticksSinceLastDrain > 1000) {
-          // Drain lamp power
-          lamp.drain();
-          ticksAtLastDrain = currentTicks;
-        }
-        ticksSinceLastBlinkSession = currentTicks - ticksAtLastBlinkSession;
-
-        if (isBlinking) {
-          ticksSinceLastBlink = currentTicks - ticksAtLastBlink;
-          if (ticksSinceLastBlink > BLINK_DURATION) {
-            if (SDL_GetRenderDrawColor(gRenderer, &r, &g, &b, &a) == 0) {
-              ticksAtLastBlink = currentTicks;
-              if (r == 0) {
-                // Turn screen white
-                SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-                isBlinking = false;
-                ticksAtLastBlinkSession = currentTicks;
-              } else {
-                // Turn screen black
-                SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
-              }
-            } else {
-              printf("SDL_GetRendererDrawColor Failed! SDL_Error: %s\n",
-                     SDL_GetError());
-            }
-          }
-        } else if ((lamp.getCharge() / 10) * BLINK_RATE <
-                   ticksSinceLastBlinkSession) {
-          isBlinking = true;
-        }
-
-        if (currentTicks % DRAIN_INCREMENT_INTERVAL < 17) {
-          lamp.increaseDrainRate(DRAIN_INCREMENT);
-        }
-      }
-
       // Update screen
       SDL_RenderPresent(gRenderer);
     }
