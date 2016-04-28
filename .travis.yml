@@ -14,7 +14,7 @@ sudo: required
 
 install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install sdl2; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install sdl2 sdl2_ttf sdl2_image; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./build_sdl2.sh; fi
 
 script:
