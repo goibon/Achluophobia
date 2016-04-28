@@ -19,9 +19,9 @@ SDL_Window *gWindow = NULL;
 TTF_Font* gFont;
 
 //Text colors
-SDL_Color defaultTextColor = {0,0,0,255};
-SDL_Color highlightTextColor = {35,35,35,255};
-SDL_Color highlightTextBackgroundColor = {10,10,10,255};
+SDL_Color defaultTextColor = {0,0,0};
+SDL_Color highlightTextColor = {0,0,0};
+SDL_Color highlightTextBackgroundColor = {150,150,150};
 
 bool init();
 
