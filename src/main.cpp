@@ -1,5 +1,7 @@
 #include "lamp.hpp"
+#include "fontTexture.hpp"
 #include <SDL.h>
+#include <SDL_ttf.h>
 #include <stdio.h>
 
 // Constants
@@ -13,6 +15,8 @@ const int DRAIN_INCREMENT = 1;
 // Global variables
 SDL_Renderer *gRenderer = NULL;
 SDL_Window *gWindow = NULL;
+//Open the font
+TTF_Font* gFont;
 
 bool init();
 
@@ -26,7 +30,22 @@ int main(int argc, char const *argv[]) {
     bool shouldQuit = false;
 
     // Menu flag
-    bool isInMenu = false;
+    bool isInMenu = true;
+
+    int screenWidth = SCREEN_WIDTH;
+    int screenHeight = SCREEN_HEIGHT;
+    SDL_GetWindowSize(gWindow, &screenWidth, &screenHeight);
+    FontTexture titleText(screenWidth, screenHeight, gFont);
+    SDL_Color color = {0,0,0,255};
+    if (!titleText.loadFromFile("Achluophobia", gRenderer, color))
+    {
+      printf("Failed to load text for titleText! SDL_Error: %s\n", SDL_GetError());
+    }
+    SDL_Rect rect;
+    rect.x = screenWidth / 2;
+    rect.y = screenHeight / 2;
+    rect.w = screenWidth;
+    rect.h = screenHeight;
 
     // Event handler
     SDL_Event event;
@@ -57,6 +76,16 @@ int main(int argc, char const *argv[]) {
             shouldQuit = true;
           }
         }
+        // Clear screen
+        SDL_RenderClear(gRenderer);
+        SDL_GetWindowSize(gWindow, &screenWidth, &screenHeight);
+        rect.x = screenWidth / 2 - rect.w / 2;
+        rect.y = rect.h / 2;
+        rect.w = screenWidth * 0.8;
+        rect.h = screenHeight * 0.2;
+        titleText.render(gRenderer, NULL, &rect);
+        // Update screen
+        SDL_RenderPresent(gRenderer);
       }
       else
       {
@@ -111,11 +140,11 @@ int main(int argc, char const *argv[]) {
             lamp.increaseDrainRate(DRAIN_INCREMENT);
           }
         }
+        // Clear screen
+        SDL_RenderClear(gRenderer);
+        // Update screen
+        SDL_RenderPresent(gRenderer);
       }
-      // Clear screen
-      SDL_RenderClear(gRenderer);
-      // Update screen
-      SDL_RenderPresent(gRenderer);
     }
   }
 
@@ -150,6 +179,21 @@ bool init() {
       } else {
         // Initialize renderer color
         SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+
+        //Initialize SDL_ttf
+        if(TTF_Init() == -1)
+        {
+          printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
+          success = false;
+        }
+        else
+        {
+          //Open the font
+          gFont = TTF_OpenFont( "fonts/lazy.ttf", 28 );
+          if (gFont == NULL) {
+            printf("Failed to open fonts/lazy.ttf! SDL_Error: %s\n", TTF_GetError());
+          }
+        }
       }
     }
   }
@@ -162,6 +206,10 @@ void close() {
   SDL_DestroyWindow(gWindow);
   gWindow = NULL;
   gRenderer = NULL;
+
+  // Close font
+  TTF_CloseFont( gFont );
+  gFont = NULL;
 
   // Quit SDL subsystems
   SDL_Quit();
