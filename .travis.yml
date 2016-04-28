@@ -9,19 +9,20 @@ compiler:
   - gcc
   - clang
 
+# For installing apt packages
+sudo: required
+
 addons:
   apt:
     packages:
       - sdl2
 
-before install:
+install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install sdl2; fi
 
-before_script:
+script:
   - mkdir build
   - cd build
   - cmake ..
-
-script:
   - make
