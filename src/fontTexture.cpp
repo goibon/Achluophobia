@@ -15,7 +15,7 @@ bool FontTexture::loadFromFile(std::string text, SDL_Renderer* renderer, SDL_Col
   bool success = true;
 
   //Render text surface
-  SDL_Surface* textSurface = TTF_RenderText_Solid(mFont, text.c_str(), textColor);
+  SDL_Surface* textSurface = TTF_RenderText_Blended(mFont, text.c_str(), textColor);
 
   if(textSurface == NULL)
   {
