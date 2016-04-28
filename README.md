@@ -3,6 +3,8 @@
 #Achluophobia
 This is my entry into the [1Bit game jam](https://itch.io/jam/bit-jam).
 
+![Screenshot of the main game view](Screenshot.png?raw=true)
+
 #Prerequisites
 [SDL2](https://libsdl.org/)
 It is available through homebrew
