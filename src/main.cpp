@@ -224,7 +224,7 @@ bool init() {
         else
         {
           //Open the font
-          gFont = TTF_OpenFont( "fonts/lazy.ttf", 28 );
+          gFont = TTF_OpenFont( "fonts/lazy.ttf", 100 );
           if (gFont == NULL) {
             printf("Failed to open fonts/lazy.ttf! SDL_Error: %s\n", TTF_GetError());
           }
