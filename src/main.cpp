@@ -42,10 +42,10 @@ int main(int argc, char const *argv[]) {
       printf("Failed to load text for titleText! SDL_Error: %s\n", SDL_GetError());
     }
     SDL_Rect rect;
-    rect.x = screenWidth / 2;
-    rect.y = screenHeight / 2;
-    rect.w = screenWidth;
-    rect.h = screenHeight;
+    rect.x = screenWidth / 2 - screenWidth * 0.8 / 2;
+    rect.y = screenHeight * 0.2 / 2;
+    rect.w = screenWidth * 0.8;
+    rect.h = screenHeight * 0.2;
 
     // Event handler
     SDL_Event event;
@@ -75,14 +75,22 @@ int main(int argc, char const *argv[]) {
           if (event.type == SDL_QUIT) {
             shouldQuit = true;
           }
+          else if (event.type == SDL_WINDOWEVENT)
+          {
+            switch (event.window.event) {
+              case SDL_WINDOWEVENT_RESIZED:
+              case SDL_WINDOWEVENT_SIZE_CHANGED:
+              SDL_GetWindowSize(gWindow, &screenWidth, &screenHeight);
+              rect.x = screenWidth / 2 - rect.w / 2;
+              rect.y = rect.h / 2;
+              rect.w = screenWidth * 0.8;
+              rect.h = screenHeight * 0.2;
+              break;
+            }
+          }
         }
         // Clear screen
         SDL_RenderClear(gRenderer);
-        SDL_GetWindowSize(gWindow, &screenWidth, &screenHeight);
-        rect.x = screenWidth / 2 - rect.w / 2;
-        rect.y = rect.h / 2;
-        rect.w = screenWidth * 0.8;
-        rect.h = screenHeight * 0.2;
         titleText.render(gRenderer, NULL, &rect);
         // Update screen
         SDL_RenderPresent(gRenderer);
