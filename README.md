@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/goibon/Achluophobia.svg?branch=master)](https://travis-ci.org/goibon/Achluophobia)
+
 #Achluophobia
 This is my entry into the [1Bit game jam](https://itch.io/jam/bit-jam).
 
@@ -16,5 +18,5 @@ if you want you can use cmake which is also available through homebrew
 Create a build folder for out-of-source build (This step is of course optional)
 
 1. `mkdir build && cd build`
-1. `cmake ..` 
+1. `cmake ..`
 1. `make`
