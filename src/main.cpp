@@ -41,8 +41,7 @@ int main(int argc, char const *argv[]) {
     int screenHeight = SCREEN_HEIGHT;
     SDL_GetWindowSize(gWindow, &screenWidth, &screenHeight);
     FontTexture titleText(screenWidth, screenHeight, gFont);
-    SDL_Color color = {0,0,0,255};
-    if (!titleText.loadFromFile("Achluophobia", gRenderer, color))
+    if (!titleText.loadFromFile("Achluophobia", gRenderer, defaultTextColor))
     {
       printf("Failed to load text for titleText! SDL_Error: %s\n", SDL_GetError());
     }
@@ -91,6 +90,29 @@ int main(int argc, char const *argv[]) {
               rect.w = screenWidth * 0.8;
               rect.h = screenHeight * 0.2;
               break;
+            }
+          }
+          else if( event.type == SDL_MOUSEMOTION || event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP)
+          {
+            //Get mouse position
+            int x, y;
+            SDL_GetMouseState( &x, &y );
+
+            bool isMouseInside = false;
+
+            if (x < rect.x || x > rect.x + rect.w || y < rect.y || y > rect.y + rect.h)
+            {
+              isMouseInside = false;
+              titleText.loadFromFile("Achluophobia", gRenderer, defaultTextColor);
+            } else
+            {
+              isMouseInside = true;
+              titleText.loadFromFile("Achluophobia", gRenderer, highlightTextColor, highlightTextBackgroundColor);
+            }
+
+            if (isMouseInside && event.type == SDL_MOUSEBUTTONUP)
+            {
+              isInMenu = false;
             }
           }
         }
