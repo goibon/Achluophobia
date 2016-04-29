@@ -1,6 +1,10 @@
 
 language: cpp
 
+matrix:
+  allow_failures:
+    - os: linux
+
 os:
   - linux
   - osx
