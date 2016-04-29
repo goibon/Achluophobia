@@ -45,11 +45,23 @@ int main(int argc, char const *argv[]) {
     {
       printf("Failed to load text for titleText! SDL_Error: %s\n", SDL_GetError());
     }
-    SDL_Rect rect;
-    rect.x = screenWidth / 2 - screenWidth * 0.8 / 2;
-    rect.y = screenHeight * 0.2 / 2;
-    rect.w = screenWidth * 0.8;
-    rect.h = screenHeight * 0.2;
+    SDL_Rect titleRect;
+    titleRect.x = screenWidth / 2 - screenWidth * 0.8 / 2;
+    titleRect.y = screenHeight * 0.2 / 2;
+    titleRect.w = screenWidth * 0.8;
+    titleRect.h = screenHeight * 0.2;
+
+    // Play button
+    FontTexture playText(screenWidth, screenHeight, gFont);
+    if (!playText.loadFromFile("Play", gRenderer, defaultTextColor))
+    {
+      printf("Failed to load text for playText! SDL_Error: %s\n", SDL_GetError());
+    }
+    SDL_Rect playRect;
+    playRect.w = screenWidth * 0.3;
+    playRect.h = screenHeight * 0.2;
+    playRect.x = screenWidth / 2 - playRect.w / 2;
+    playRect.y = screenHeight - playRect.h * 1.2;
 
     // Event handler
     SDL_Event event;
@@ -85,10 +97,15 @@ int main(int argc, char const *argv[]) {
               case SDL_WINDOWEVENT_RESIZED:
               case SDL_WINDOWEVENT_SIZE_CHANGED:
               SDL_GetWindowSize(gWindow, &screenWidth, &screenHeight);
-              rect.x = screenWidth / 2 - rect.w / 2;
-              rect.y = rect.h / 2;
-              rect.w = screenWidth * 0.8;
-              rect.h = screenHeight * 0.2;
+              titleRect.w = screenWidth * 0.8;
+              titleRect.h = screenHeight * 0.2;
+              titleRect.x = screenWidth / 2 - titleRect.w / 2;
+              titleRect.y = titleRect.h / 2;
+
+              playRect.w = screenWidth * 0.3;
+              playRect.h = screenHeight * 0.2;
+              playRect.x = screenWidth / 2 - playRect.w / 2;
+              playRect.y = screenHeight - playRect.h * 1.2;
               break;
             }
           }
@@ -100,14 +117,14 @@ int main(int argc, char const *argv[]) {
 
             bool isMouseInside = false;
 
-            if (x < rect.x || x > rect.x + rect.w || y < rect.y || y > rect.y + rect.h)
+            if (x < playRect.x || x > playRect.x + playRect.w || y < playRect.y || y > playRect.y + playRect.h)
             {
               isMouseInside = false;
-              titleText.loadFromFile("Achluophobia", gRenderer, defaultTextColor);
+              playText.loadFromFile("Play", gRenderer, defaultTextColor);
             } else
             {
               isMouseInside = true;
-              titleText.loadFromFile("Achluophobia", gRenderer, highlightTextColor, highlightTextBackgroundColor);
+              playText.loadFromFile("Play", gRenderer, highlightTextColor, highlightTextBackgroundColor);
             }
 
             if (isMouseInside && event.type == SDL_MOUSEBUTTONUP)
@@ -118,7 +135,8 @@ int main(int argc, char const *argv[]) {
         }
         // Clear screen
         SDL_RenderClear(gRenderer);
-        titleText.render(gRenderer, NULL, &rect);
+        titleText.render(gRenderer, NULL, &titleRect);
+        playText.render(gRenderer, NULL, &playRect);
         // Update screen
         SDL_RenderPresent(gRenderer);
       }
