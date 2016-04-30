@@ -1,6 +1,6 @@
 #ifndef TEXTURE
 #define TEXTURE
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <string>
 
 class Texture {

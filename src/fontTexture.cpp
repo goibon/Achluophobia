@@ -1,5 +1,5 @@
 #include "fontTexture.hpp"
-#include <SDL2/SDL_ttf.h>
+#include <SDL_ttf.h>
 
 FontTexture::FontTexture(int width, int height, TTF_Font* font) : Texture(width, height)
 {

@@ -1,5 +1,5 @@
 #include "texture.hpp"
-#include <SDL2/SDL_image.h>
+#include <SDL_image.h>
 
 Texture::Texture(int width, int height){
   mWidth = width;
