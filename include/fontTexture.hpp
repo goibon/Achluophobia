@@ -6,6 +6,7 @@
 class FontTexture : public Texture {
 private:
   TTF_Font* mFont;
+  void createTextureFromSurface(SDL_Renderer* renderer, SDL_Surface* surface);
 public:
   FontTexture (int width, int height, TTF_Font* font);
 
